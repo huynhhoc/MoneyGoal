@@ -1,0 +1,27 @@
+<Button>:
+    text: "TÍNH TOÁN"
+    label: "tinhtoan"
+    size_hint: (1, 1)
+    pos_hint: {'center_x': 0.5, 'center_y': .1}
+    background_color: 0.1, 0.5, 0.6, 1
+    on_press: app.on_press_button(self)
+<BoxLayout>:
+    canvas:
+        Rectangle:
+            source: 'Heading2.png'
+            size: self.size
+            pos: self.pos
+<TextInput>:
+    pos_hint: {"x":1, "top":1}
+    halign: "right"
+    multiline: False
+    readonly:True
+    size_hint: 1, 1
+    font_size: '15dp'
+    input_type:"number"
+    input_filter: "float"
+    helper_text_mode:"on_focus"
+<Label>:
+    text_size: self.size
+    halign: 'center'
+    valign: 'center'
