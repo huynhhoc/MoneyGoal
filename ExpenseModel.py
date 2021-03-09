@@ -32,9 +32,15 @@ class ExpenseModel:
         except:
             print ('something wrong: ')
     def setExpenseMonthly(self, ExpenseMonthly):
-        self.data["ExpenseMonthly"] = str(ExpenseMonthly)
+        try:
+            self.data["ExpenseMonthly"] = str(ExpenseMonthly)
+        except:
+            print ('something wrong: ')
     def setTotalProfit(self, TotalProfit):
-        self.data["TotalProfit"] = str(TotalProfit)
+        try:
+            self.data["TotalProfit"] = str(TotalProfit)
+        except:
+            print('something wrong: ')
     #def setIncomeByMonth(self, month):
     #    self.data[month]["Income"]
     #def setExpenseByMonth(self, month):
