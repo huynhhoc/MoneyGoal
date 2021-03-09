@@ -49,15 +49,10 @@ class MoneyGoalApp(App):
         #create Edit Expense
         
         #loadData
-        # TO-DO
-        dataBudget = ExpenseModel('budget.json')
-        dataBudget.loadBudget()
-        self.data = dataBudget.data
-        print (self.data["IncomeMonthly"])
-        if self.data["IncomeMonthly"] !="":
-            self.incomeMonthly.text = self.convertNumberToDecimal(self.data["IncomeMonthly"])
+        self.loadDataToMainScreen('budget.json')
+        self.loadDataToIncomeScreen('budget.json')
+        self.loadDataToExpenseScreen('budget.json')
         #loadData
-        
         #Create Screen Manager
         self.sm.add_widget(self.mainScreen)
         self.sm.add_widget(self.editIncomeScreen)
@@ -66,6 +61,17 @@ class MoneyGoalApp(App):
         return self.sm
     #end build GUI
     #begin methods
+    def loadDataToMainScreen(self, jsonData):
+        dataBudget = ExpenseModel(jsonData)
+        dataBudget.loadBudget()
+        self.data = dataBudget.data
+        print (self.data["IncomeMonthly"])
+        if self.data["IncomeMonthly"] !="":
+            self.incomeMonthly.text = self.convertNumberToDecimal(self.data["IncomeMonthly"])
+    def loadDataToIncomeScreen(self, jsonData):
+        pass
+    def loadDataToExpenseScreen(self, jsonData):
+        pass
     def createScreenEdit(self, edit_layout, editType):
         self.createHeadingEdit(edit_layout, editType)
         self.createGridLayoutInput(edit_layout)
