@@ -7,11 +7,14 @@ from kivy.uix.label import Label
 from kivy.core.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
 import numpy as np
+import json
+from ExpenseModel import ExpenseModel
 class MoneyGoalApp(App):
     #begin fields
-    incomeMonthly =TextInput(multiline=False, readonly=False)
-    expenseMonthly = TextInput(multiline=False, readonly=False)
-    totalProfit = TextInput(multiline=False, readonly=True)
+    incomeMonthly =TextInput(multiline=False, halign= "right",input_type ="number", input_filter= "float",readonly=False,size_hint=(1, 1))
+    expenseMonthly = TextInput(multiline=False, halign= "right", input_type = "number", input_filter= "float", readonly=False, size_hint=(1, 1))
+    totalProfit = TextInput(multiline=False, halign= "right", readonly=True, size_hint=(1, 1))
+    data = None
     # Create the screen manager
     sm = ScreenManager()
     mainScreen = Screen(name='main')
@@ -28,6 +31,7 @@ class MoneyGoalApp(App):
         main_layout = BoxLayout(orientation="vertical")
         editIncome_layout = BoxLayout(orientation="vertical")
         editExpense_layout = BoxLayout(orientation="vertical")
+        
         #create GUI for main layout
         self.createSection1(main_layout)
         self.createHeadingGridDetails(main_layout)
@@ -43,6 +47,16 @@ class MoneyGoalApp(App):
         self.createScreenEdit(editExpense_layout,"expense")
         self.editExpenseScreen.add_widget(editExpense_layout)
         #create Edit Expense
+        
+        #loadData
+        # TO-DO
+        dataBudget = ExpenseModel('budget.json')
+        dataBudget.loadBudget()
+        self.data = dataBudget.data
+        print (self.data["IncomeMonthly"])
+        if self.data["IncomeMonthly"] !="":
+            self.incomeMonthly.text = self.convertNumberToDecimal(self.data["IncomeMonthly"])
+        #loadData
         
         #Create Screen Manager
         self.sm.add_widget(self.mainScreen)
@@ -74,19 +88,25 @@ class MoneyGoalApp(App):
         labelTitle =["STT", "Mô tả", "Số tiền"]
         gridLayout = BoxLayout()
         row_layoutLabel = BoxLayout()
-        for col in labelTitle:
-            labItem = Label(text=col)
+        for index, col in enumerate(labelTitle):
+            if index == 0:
+                labItem = Label(text=col, pos_hint={'x': 0, 'center_y': .5},size_hint=(0.1, 0.5))
+            elif index == 1:
+                labItem = Label(text=col, size_hint=(1, 1))
+            else:
+                labItem = Label(text=col, size_hint=(0.3, 1))
             row_layoutLabel.add_widget(labItem)
         gridLayout.add_widget(row_layoutLabel)
         edit_layout.add_widget(gridLayout)
         for index in range(0,15):
             row_layout = BoxLayout()
-            labNo = Label(text = str(index+1))
-            listDescription.append(TextInput())
-            listMoney.append(TextInput())
+            labNo = Label(text = str(index+1), pos_hint={'x': 0, 'center_y': .5},size_hint=(0.1, 0.5))
+            listDescription.append(TextInput(halign= "left", readonly= False, size_hint=(1, 1)))
+            listMoney.append(TextInput(halign= "right", readonly= False, input_filter= "float", size_hint=(0.3, 1)))
             row_layout.add_widget(labNo)
             row_layout.add_widget(listDescription[index])
             row_layout.add_widget(listMoney[index])
+            listMoney[index].bind(focus=self.on_focus)
             edit_layout.add_widget(row_layout)
     def createSection1(self, main_layout):
         #income
@@ -187,6 +207,10 @@ class MoneyGoalApp(App):
         if instance.label == "tinhtoan":
             self.caculateMonthly(self.incomeMonthly.text, self.expenseMonthly.text)
             self.caculateSummary()
+            #update data
+            dataBudget = ExpenseModel('budget.json')
+            dataBudget.setIncomeMonthly(self.removeCommaToCaculate(self.incomeMonthly.text))
+            dataBudget.updateBudget()
         elif instance.label =="back" or instance.label =="home":
             self.sm.switch_to(self.mainScreen, direction = 'left')
         elif instance.label =="next":

@@ -1,14 +1,1 @@
-{"IncomeMonthly": "20000000","ExpenseMonthly": "15000000","TotalProfit": "",
-    "January": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "February": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "March": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "April": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "May": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "June": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "July": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "August": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "September": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "October": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "November": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "December": {"Income": [], "Expense": [],"RateExpense": "", "Profit": ""},
-    "Total": {"Income": "", "Expense": [],"RateExpense": "", "Profit": ""}}
+{"IncomeMonthly": "30000000.00", "ExpenseMonthly": "15000000", "TotalProfit": "", "January": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "February": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "March": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "April": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "May": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "June": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "July": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "August": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "September": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "October": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "November": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "December": {"Income": [{"Description": "", "value": ""}], "Expense": [{"Description": "", "value": ""}], "RateExpense": "", "Profit": ""}, "Total": {"Income": "", "Expense": [], "RateExpense": "", "Profit": ""}}
