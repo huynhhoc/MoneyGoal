@@ -41,12 +41,32 @@ class ExpenseModel:
             self.data["TotalProfit"] = str(TotalProfit)
         except:
             print('something wrong: ')
-    #def setIncomeByMonth(self, month):
-    #    self.data[month]["Income"]
-    #def setExpenseByMonth(self, month):
-    #    self.data[month]["Expense"]
+
+    def setDetailProfit(self, income_list, expense_list, rateExpense_list, profit_list):
+        months = ['January', 'February', 'March','April', 'May', 'June', 'July', 'August','September','October','November','December']
+        for index, month in enumerate(months):
+            self.setIncomeByMonth(month, income_list[index].text)
+            self.setExpenseByMonth(month, expense_list[index].text)
+            self.setRateExpenseByMonth(month, rateExpense_list[index].text)
+            self.setProfitByMonth(month, profit_list[index].text)
+        self.setTotalIncome(income_list[index+1].text)
+        self.setTotalExpense(expense_list[index+1].text)
+        self.setTotalRateExpense(rateExpense_list[index+1].text)
+        self.setTotalProfit(profit_list[index+1].text)
+    def setIncomeByMonth(self, month, income):
+        self.data[month]["Income"] = str(income)
+    def setExpenseByMonth(self, month, expense):
+        self.data[month]["Expense"] = str(expense)
     def setRateExpenseByMonth(self, month,RateExpense):
         self.data[month]["RateExpense"] = str(RateExpense)
     def setProfitByMonth(self, month, Profit):
         self.data[month]["Profit"] = str(Profit)
+    def setTotalIncome(self,totalIncome):
+            self.data["Total"]["Income"] = str(totalIncome)
+    def setTotalExpense(self, totalExpense):
+        self.data["Total"]["Expense"] = str(totalExpense)
+    def setTotalRateExpense(self, TotalRateExpense):
+        self.data["Total"]["RateExpense"] = str(TotalRateExpense)
+    def setTotalProfit(self, TotalProfit):
+        self.data["Total"]["Profit"] = str(TotalProfit)
     #Set

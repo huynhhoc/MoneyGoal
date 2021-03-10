@@ -212,20 +212,23 @@ class MoneyGoalApp(App):
         self.rateExpense_list[indexExpense + 1].text = str(np.round(totalExpense*100.0/totalIncome))+"%"
         self.profit_list[indexProfit + 1].text = self.profit_list[indexProfit].text
         self.totalProfit.text = self.profit_list[indexProfit].text
+        dataBudget = ExpenseModel('budget.json')
+        dataBudget.setIncomeMonthly(self.removeCommaToCaculate(self.incomeMonthly.text))
+        dataBudget.setExpenseMonthly(self.removeCommaToCaculate(self.expenseMonthly.text))
+        dataBudget.setTotalProfit(self.removeCommaToCaculate(self.totalProfit.text))
+        dataBudget.updateBudget()
+    def updateDataMainScreen(self, jsonFile):
         dataBudget = ExpenseModel(jsonFile)
         dataBudget.setIncomeMonthly(self.removeCommaToCaculate(self.incomeMonthly.text))
         dataBudget.setExpenseMonthly(self.removeCommaToCaculate(self.expenseMonthly.text))
         dataBudget.setTotalProfit(self.removeCommaToCaculate(self.totalProfit.text))
+        dataBudget.setDetailProfit(self.income_list, self.expense_list, self.rateExpense_list, self.profit_list)
         dataBudget.updateBudget()
     def on_press_button(self, instance):
         print('You pressed the button! ', instance.text, "id: ", instance.label)
         if instance.label == "tinhtoan":
             self.caculateMonthly(self.incomeMonthly.text, self.expenseMonthly.text)
             self.caculateSummary()
-            #update data
-            #dataBudget = ExpenseModel('budget.json')
-            #dataBudget.setIncomeMonthly(self.removeCommaToCaculate(self.incomeMonthly.text))
-            #dataBudget.updateBudget()
             self.updateDataMainScreen('budget.json')
         elif instance.label =="back" or instance.label =="home":
             self.sm.switch_to(self.mainScreen, direction = 'left')
