@@ -9,12 +9,16 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 import numpy as np
 import json
 from ExpenseModel import ExpenseModel
+from NumberUtilities import NumberUtilities
+from HelperUtilities import HelperUtilities
 class MoneyGoalApp(App):
     #begin fields
     incomeMonthly =TextInput(multiline=False, halign= "right",input_type ="number", input_filter= "float",readonly=False,size_hint=(1, 1))
     expenseMonthly = TextInput(multiline=False, halign= "right", input_type = "number", input_filter= "float", readonly=False, size_hint=(1, 1))
     totalProfit = TextInput(multiline=False, halign= "right", readonly=True, size_hint=(1, 1))
     data = None
+    labelIncomeMonthly = Label(text="Thu nhập tháng ")
+    labelExpenseMonthly = Label(text="Chi tiêu tháng ")
     # Create the screen manager
     sm = ScreenManager()
     mainScreen = Screen(name='main')
@@ -25,8 +29,21 @@ class MoneyGoalApp(App):
     expense_list = []
     rateExpense_list = []
     profit_list =[]
+    
+    #Detail Income 
+    listDetailIncomeDescription = []
+    listDetailIncomeMoney = []
+    #Detail Expense
+    listDetailExpenseDescription = []
+    listDetailExpenseMoney = []
     #end fields
     #build GUI
+    def resetDetailIncome(self):
+        self.listDetailIncomeDescription = []
+        self.listDetailIncomeMoney = []
+    def resetDetailExpense(self):
+        self.listDetailExpenseDescription = []
+        self.listDetailExpenseMoney = []
     def build(self):
         main_layout = BoxLayout(orientation="vertical")
         editIncome_layout = BoxLayout(orientation="vertical")
@@ -40,18 +57,18 @@ class MoneyGoalApp(App):
         #create GUI for main layout
         
         #create Edit Income
-        self.createScreenEdit(editIncome_layout, "income")
+        self.createScreenEdit(editIncome_layout, HelperUtilities.IncomeType)
         self.editIncomeScreen.add_widget(editIncome_layout)
         #create Edit Income
         #create Edit Expense
-        self.createScreenEdit(editExpense_layout,"expense")
+        self.createScreenEdit(editExpense_layout,HelperUtilities.ExpenseType)
         self.editExpenseScreen.add_widget(editExpense_layout)
         #create Edit Expense
         
         #loadData
-        self.loadDataToMainScreen('budget.json')
-        self.loadDataToIncomeScreen('budget.json')
-        self.loadDataToExpenseScreen('budget.json')
+        self.loadDataToMainScreen(HelperUtilities.DataSource)
+        self.loadDataToIncomeScreen(HelperUtilities.DataSource)
+        self.loadDataToExpenseScreen(HelperUtilities.DataSource)
         #loadData
         #Create Screen Manager
         self.sm.add_widget(self.mainScreen)
@@ -63,38 +80,48 @@ class MoneyGoalApp(App):
     #begin methods
     def loadDataToMainScreen(self, jsonData):
         dataBudget = ExpenseModel(jsonData)
-        print("dataBudget: ", dataBudget)
         self.data = dataBudget.data
         print (self.data["IncomeMonthly"])
         if self.data["IncomeMonthly"] !="":
-            self.incomeMonthly.text = self.convertNumberToDecimal(self.data["IncomeMonthly"])
+            self.incomeMonthly.text = NumberUtilities.convertNumberToDecimal(self.data["IncomeMonthly"])
         if self.data["ExpenseMonthly"] !="":
-            self.expenseMonthly.text = self.convertNumberToDecimal(self.data["ExpenseMonthly"])
+            self.expenseMonthly.text = NumberUtilities.convertNumberToDecimal(self.data["ExpenseMonthly"])
         if self.data["TotalProfit"] !="":
-            self.totalProfit.text = self.convertNumberToDecimal(self.data["TotalProfit"])
+            self.totalProfit.text = NumberUtilities.convertNumberToDecimal(self.data["TotalProfit"])
+        for index, month in enumerate(ExpenseModel.months):
+            self.income_list[index].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getIncomeByMonth(month))
+            self.expense_list[index].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getExpenseByMonth(month))
+            self.rateExpense_list[index].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getRateExpenseByMonth(month))
+            self.profit_list[index].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getProfitByTotal())
+        self.income_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getIncomeByTotal())
+        self.expense_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getExpenseByTotal())
+        self.rateExpense_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getRateExpenseByTotal())
+        self.profit_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getProfitByTotal())
     def loadDataToIncomeScreen(self, jsonData):
         pass
     def loadDataToExpenseScreen(self, jsonData):
         pass
     def createScreenEdit(self, edit_layout, editType):
         self.createHeadingEdit(edit_layout, editType)
-        self.createGridLayoutInput(edit_layout)
+        self.createGridLayoutInput(edit_layout, editType)
     def createHeadingEdit(self, edit_layout, editType):
-        labMonth = Label(text="Chi tiêu tháng " + self.currentMonth + ":" + "editType: "+ editType)
         buttonLayout = BoxLayout()
         backButton = Button(text="<-", pos_hint ={"right":1}, label = "back")
         if editType =="expense":
             nextButton = Button(text="Home", pos_hint ={"right":1}, label = "home")
+            self.labelExpenseMonthly.text = "Chi tiêu tháng "
+            buttonLayout.add_widget(self.labelExpenseMonthly)
         else:
             nextButton = Button(text="->", pos_hint ={"right":1}, label = "next")
-        buttonLayout.add_widget(labMonth)
+            self.labelIncomeMonthly.text = "Thu nhập tháng "
+            buttonLayout.add_widget(self.labelIncomeMonthly)
         buttonLayout.add_widget(backButton)
         buttonLayout.add_widget(nextButton)
         edit_layout.add_widget(buttonLayout)
         edit_layout.add_widget(Button())
-    def createGridLayoutInput(self, edit_layout):
-        listDescription = []
-        listMoney = []
+    def createGridLayoutInput(self, edit_layout, editType):
+        #listDescription = []
+        #listMoney = []
         labelTitle =["STT", "Mô tả", "Số tiền"]
         gridLayout = BoxLayout()
         row_layoutLabel = BoxLayout()
@@ -108,15 +135,29 @@ class MoneyGoalApp(App):
             row_layoutLabel.add_widget(labItem)
         gridLayout.add_widget(row_layoutLabel)
         edit_layout.add_widget(gridLayout)
+        if editType == HelperUtilities.IncomeType:
+            self.resetDetailIncome()
+            self.addDetailInputToGridLayout(edit_layout, self.listDetailIncomeDescription,self.listDetailIncomeMoney,editType)
+        else:
+            self.resetDetailExpense()
+            self.addDetailInputToGridLayout(edit_layout, self.listDetailExpenseDescription,self.listDetailExpenseMoney, editType)
+    def addDetailInputToGridLayout(self, edit_layout, listDescription,listMoney, editType):
         for index in range(0,15):
             row_layout = BoxLayout()
             labNo = Label(text = str(index+1), pos_hint={'x': 0, 'center_y': .5},size_hint=(0.1, 0.5))
-            listDescription.append(TextInput(halign= "left", readonly= False, size_hint=(1, 1)))
-            listMoney.append(TextInput(halign= "right", readonly= False, input_filter= "float", size_hint=(0.3, 1)))
+            if index ==0:
+                listDescription.append(TextInput(text = "Tổng", halign= "left", readonly= True, size_hint=(1, 1)))
+                listMoney.append(TextInput(halign= "right", readonly= True, input_filter= "float", size_hint=(0.3, 1)))
+            else:
+                listDescription.append(TextInput(halign= "left", readonly= False, size_hint=(1, 1)))
+                listMoney.append(TextInput(halign= "right", readonly= False, input_filter= "float", size_hint=(0.3, 1)))
+            if editType == HelperUtilities.IncomeType:
+                listMoney[index].bind(focus=self.on_focusUpdateIncome)
+            else:
+                listMoney[index].bind(focus=self.on_focusUpdateExpense)
             row_layout.add_widget(labNo)
             row_layout.add_widget(listDescription[index])
             row_layout.add_widget(listMoney[index])
-            listMoney[index].bind(focus=self.on_focus)
             edit_layout.add_widget(row_layout)
     def createSection1(self, main_layout):
         #income
@@ -179,49 +220,49 @@ class MoneyGoalApp(App):
         main_layout.add_widget(layoutRow)
     def caculateMonthly(self, income, expense):
         if income == "":
-            income = "1.00"
-            self.incomeMonthly.text ="1.00"
+            income = "0.00"
+            self.incomeMonthly.text ="0.00"
         if expense == "":
             expense = "0.00"
             self.expenseMonthly.text ="0.00"
-        incomeFloat = float(self.removeCommaToCaculate(income))
-        expenseMonthly = float(self.removeCommaToCaculate(expense)) #incomeFloat*float(RateExpense)/100
+        incomeFloat = float(NumberUtilities.removeCommaToCaculate(income))
+        expenseMonthly = float(NumberUtilities.removeCommaToCaculate(expense)) #incomeFloat*float(RateExpense)/100
         rateExpenseMonthly = np.round(expenseMonthly*100.0/incomeFloat)
         profitMontly = 0
         for index in range(0, len(self.income_list)-1):
-            self.income_list[index].text = self.appendCommaBeforeDot(str(incomeFloat))
+            self.income_list[index].text = NumberUtilities.appendCommaBeforeDot(str(incomeFloat))
         for index in range (0,len(self.expense_list)-1):
-            self.expense_list[index].text = self.appendCommaBeforeDot(str(expenseMonthly))
+            self.expense_list[index].text = NumberUtilities.appendCommaBeforeDot(str(expenseMonthly))
         for index in range (0,len(self.rateExpense_list)-1):
             self.rateExpense_list[index].text = str(rateExpenseMonthly)+"%"
         for index in range(0, len(self.profit_list)-1):
             profitMontly = profitMontly + (incomeFloat - expenseMonthly)
-            self.profit_list[index].text = self.appendCommaBeforeDot(str(profitMontly))
+            self.profit_list[index].text = NumberUtilities.appendCommaBeforeDot(str(profitMontly))
     def caculateSummary(self):
         totalIncome = 0
         totalExpense = 0
         totalProfit = 0
         for indexIncome in range(0, len(self.income_list)-1):
-            totalIncome += float(self.removeCommaToCaculate(self.income_list[indexIncome].text))
+            totalIncome += float(NumberUtilities.removeCommaToCaculate(self.income_list[indexIncome].text))
         for indexExpense in range (0,len(self.expense_list)-1):
-            totalExpense += float(self.removeCommaToCaculate(self.expense_list[indexExpense].text))
+            totalExpense += float(NumberUtilities.removeCommaToCaculate(self.expense_list[indexExpense].text))
         for indexProfit in range(0, len(self.profit_list)-1):
-            totalProfit += float(self.removeCommaToCaculate(self.profit_list[indexProfit].text))
-        self.income_list[indexIncome + 1].text = self.appendCommaBeforeDot(str(totalIncome))
-        self.expense_list[indexExpense + 1].text = self.appendCommaBeforeDot(str(totalExpense))
+            totalProfit += float(NumberUtilities.removeCommaToCaculate(self.profit_list[indexProfit].text))
+        self.income_list[indexIncome + 1].text = NumberUtilities.appendCommaBeforeDot(str(totalIncome))
+        self.expense_list[indexExpense + 1].text = NumberUtilities.appendCommaBeforeDot(str(totalExpense))
         self.rateExpense_list[indexExpense + 1].text = str(np.round(totalExpense*100.0/totalIncome))+"%"
         self.profit_list[indexProfit + 1].text = self.profit_list[indexProfit].text
         self.totalProfit.text = self.profit_list[indexProfit].text
         dataBudget = ExpenseModel('budget.json')
-        dataBudget.setIncomeMonthly(self.removeCommaToCaculate(self.incomeMonthly.text))
-        dataBudget.setExpenseMonthly(self.removeCommaToCaculate(self.expenseMonthly.text))
-        dataBudget.setTotalProfit(self.removeCommaToCaculate(self.totalProfit.text))
+        dataBudget.setIncomeMonthly(NumberUtilities.removeCommaToCaculate(self.incomeMonthly.text))
+        dataBudget.setExpenseMonthly(NumberUtilities.removeCommaToCaculate(self.expenseMonthly.text))
+        dataBudget.setTotalProfit(NumberUtilities.removeCommaToCaculate(self.totalProfit.text))
         dataBudget.updateBudget()
     def updateDataMainScreen(self, jsonFile):
         dataBudget = ExpenseModel(jsonFile)
-        dataBudget.setIncomeMonthly(self.removeCommaToCaculate(self.incomeMonthly.text))
-        dataBudget.setExpenseMonthly(self.removeCommaToCaculate(self.expenseMonthly.text))
-        dataBudget.setTotalProfit(self.removeCommaToCaculate(self.totalProfit.text))
+        dataBudget.setIncomeMonthly(NumberUtilities.removeCommaToCaculate(self.incomeMonthly.text))
+        dataBudget.setExpenseMonthly(NumberUtilities.removeCommaToCaculate(self.expenseMonthly.text))
+        dataBudget.setTotalProfit(NumberUtilities.removeCommaToCaculate(self.totalProfit.text))
         dataBudget.setDetailProfit(self.income_list, self.expense_list, self.rateExpense_list, self.profit_list)
         dataBudget.updateBudget()
     def on_press_button(self, instance):
@@ -238,31 +279,31 @@ class MoneyGoalApp(App):
         else:
             self.currentMonth = instance.label[instance.label.index("_")+1:]
             print ("self.currentMonth:", self.currentMonth)
+            self.labelIncomeMonthly.text = "Thu nhập tháng " + self.currentMonth
+            self.labelExpenseMonthly.text = "Chi tiêu tháng "+ self.currentMonth
             self.sm.switch_to(self.editIncomeScreen)
-    def on_focus(self, instance, value):
+    def on_focusUpdateIncome(self, instance, value):
+        self.changeOnFocus(instance, value)
+        totalIncome = 0
+        for index, item in enumerate(self.listDetailIncomeMoney):
+            if index > 0:
+                totalIncome += float(NumberUtilities.removeCommaToCaculate(item.text))
+        self.listDetailIncomeMoney[0].text = NumberUtilities.convertNumberToDecimal(str(totalIncome))
+        self.income_list[int(self.currentMonth)].text = self.listDetailIncomeMoney[0].text
+    def on_focusUpdateExpense(self, instance, value):
+        self.changeOnFocus(instance, value)
+        totalIncome = 0
+        for index, item in enumerate(self.listDetailExpenseMoney):
+            if index > 0:
+                totalIncome += float(NumberUtilities.removeCommaToCaculate(item.text))
+        self.listDetailExpenseMoney[0].text = NumberUtilities.convertNumberToDecimal(str(totalIncome))
+    def changeOnFocus(self, instance, value):
         if value == False:
-            instance.text = self.convertNumberToDecimal(instance.text)
+            instance.text = NumberUtilities.convertNumberToDecimal(instance.text)
         else:
-            instance.text = self.removeCommaToCaculate(instance.text)
-    def convertNumberToDecimal(self, num):
-        strValue = num
-        if "." not in strValue:
-            strValue = strValue + ".00"
-        if "," in strValue:
-            return strValue
-        else:
-            return self.appendCommaBeforeDot(strValue)
-    def appendCommaBeforeDot(self, strNum):
-        indexDot = strNum.index(".")
-        indexAppend = indexDot - 3
-        while indexAppend >= 1:
-            strNum = strNum[:indexAppend] + ',' + strNum[indexAppend:]
-            indexAppend = indexAppend - 3
-        return strNum
-    def removeCommaToCaculate(self, strNum):
-        if "," in strNum:
-            strNum = strNum.replace(",","")
-        return strNum
+            instance.text = NumberUtilities.removeCommaToCaculate(instance.text)
+    def on_focus(self, instance, value):
+        self.changeOnFocus(instance, value)
     #end methods
 if __name__ == "__main__":
     app = MoneyGoalApp()

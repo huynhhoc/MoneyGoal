@@ -1,6 +1,8 @@
 import json
+from NumberUtilities import NumberUtilities
 class ExpenseModel:
     jsonFile ='budget.json'
+    months = ['January', 'February', 'March','April', 'May', 'June', 'July', 'August','September','October','November','December']
     data = None
     def	__init__(self, jsonFile):
         self.jsonFile = jsonFile
@@ -11,20 +13,29 @@ class ExpenseModel:
     def updateBudget(self):
         fileBudget = open(self.jsonFile, "w+")
         json.dump(self.data, fileBudget)
-    def getIncomeMonthly(self, data):
+    def getIncomeMonthly(self):
         return self.data["IncomeMonthly"]
-    def getExpenseMonthly(self, data):
+    def getExpenseMonthly(self):
         return self.data["ExpenseMonthly"]
-    def getTotalProfit(self, data):
+    def getTotalProfit(self):
         return self.data["TotalProfit"]
-    def getIncomeByMonth(self, month, data):
+    def getIncomeByMonth(self, month):
         return self.data[month]["Income"]
-    def getExpenseByMonth(self, month, data):
+    def getExpenseByMonth(self, month):
         return self.data[month]["Expense"]
-    def getRateExpenseByMonth(self, month, data):
+    def getRateExpenseByMonth(self, month):
         return self.data[month]["RateExpense"]
-    def getProfitByMonth(self, month, data):
+    def getProfitByMonth(self, month):
         return self.data[month]["Profit"]
+    #
+    def getIncomeByTotal(self):
+        return self.data["Total"]["Income"]
+    def getExpenseByTotal(self):
+        return self.data["Total"]["Expense"]
+    def getRateExpenseByTotal(self):
+        return self.data["Total"]["RateExpense"]
+    def getProfitByTotal(self):
+        return self.data["Total"]["Profit"]
     #Set
     def setIncomeMonthly(self, IncomeMonthly):
         try:
@@ -43,8 +54,8 @@ class ExpenseModel:
             print('something wrong: ')
 
     def setDetailProfit(self, income_list, expense_list, rateExpense_list, profit_list):
-        months = ['January', 'February', 'March','April', 'May', 'June', 'July', 'August','September','October','November','December']
-        for index, month in enumerate(months):
+        #months = ['January', 'February', 'March','April', 'May', 'June', 'July', 'August','September','October','November','December']
+        for index, month in enumerate(self.months):
             self.setIncomeByMonth(month, income_list[index].text)
             self.setExpenseByMonth(month, expense_list[index].text)
             self.setRateExpenseByMonth(month, rateExpense_list[index].text)
@@ -52,21 +63,21 @@ class ExpenseModel:
         self.setTotalIncome(income_list[index+1].text)
         self.setTotalExpense(expense_list[index+1].text)
         self.setTotalRateExpense(rateExpense_list[index+1].text)
-        self.setTotalProfit(profit_list[index+1].text)
+        self.setTotalProfitByYear(profit_list[index+1].text)
     def setIncomeByMonth(self, month, income):
-        self.data[month]["Income"] = str(income)
+        self.data[month]["Income"] = str(NumberUtilities.removeCommaToCaculate(income))
     def setExpenseByMonth(self, month, expense):
-        self.data[month]["Expense"] = str(expense)
+        self.data[month]["Expense"] = str(NumberUtilities.removeCommaToCaculate(expense))
     def setRateExpenseByMonth(self, month,RateExpense):
-        self.data[month]["RateExpense"] = str(RateExpense)
+        self.data[month]["RateExpense"] = str(NumberUtilities.removeCommaToCaculate(RateExpense))
     def setProfitByMonth(self, month, Profit):
-        self.data[month]["Profit"] = str(Profit)
+        self.data[month]["Profit"] = str(NumberUtilities.removeCommaToCaculate(Profit))
     def setTotalIncome(self,totalIncome):
-            self.data["Total"]["Income"] = str(totalIncome)
+            self.data["Total"]["Income"] = str(NumberUtilities.removeCommaToCaculate(totalIncome))
     def setTotalExpense(self, totalExpense):
-        self.data["Total"]["Expense"] = str(totalExpense)
+        self.data["Total"]["Expense"] = str(NumberUtilities.removeCommaToCaculate(totalExpense))
     def setTotalRateExpense(self, TotalRateExpense):
-        self.data["Total"]["RateExpense"] = str(TotalRateExpense)
-    def setTotalProfit(self, TotalProfit):
-        self.data["Total"]["Profit"] = str(TotalProfit)
+        self.data["Total"]["RateExpense"] = str(NumberUtilities.removeCommaToCaculate(TotalRateExpense))
+    def setTotalProfitByYear(self, TotalProfit):
+        self.data["Total"]["Profit"] = str(NumberUtilities.removeCommaToCaculate(TotalProfit))
     #Set
