@@ -39,11 +39,13 @@ class MoneyGoalApp(App):
     #end fields
     #build GUI
     def resetDetailIncome(self):
-        self.listDetailIncomeDescription = []
-        self.listDetailIncomeMoney = []
+        for index in range(0, len(self.listDetailIncomeDescription)):
+            self.listDetailIncomeDescription[index].text = ""
+            self.listDetailIncomeMoney[index].text = ""
     def resetDetailExpense(self):
-        self.listDetailExpenseDescription = []
-        self.listDetailExpenseMoney = []
+        for index  in range(0, len(self.listDetailExpenseDescription)):
+            self.listDetailExpenseDescription[index].text = ""
+            self.listDetailExpenseMoney[index].text = ""
     def build(self):
         main_layout = BoxLayout(orientation="vertical")
         editIncome_layout = BoxLayout(orientation="vertical")
@@ -107,7 +109,7 @@ class MoneyGoalApp(App):
     def createHeadingEdit(self, edit_layout, editType):
         buttonLayout = BoxLayout()
         backButton = Button(text="<-", pos_hint ={"right":1}, label = "back")
-        if editType =="expense":
+        if editType ==HelperUtilities.ExpenseType:
             nextButton = Button(text="Home", pos_hint ={"right":1}, label = "home")
             self.labelExpenseMonthly.text = "Chi tiêu tháng "
             buttonLayout.add_widget(self.labelExpenseMonthly)
@@ -120,8 +122,6 @@ class MoneyGoalApp(App):
         edit_layout.add_widget(buttonLayout)
         edit_layout.add_widget(Button())
     def createGridLayoutInput(self, edit_layout, editType):
-        #listDescription = []
-        #listMoney = []
         labelTitle =["STT", "Mô tả", "Số tiền"]
         gridLayout = BoxLayout()
         row_layoutLabel = BoxLayout()
@@ -136,10 +136,8 @@ class MoneyGoalApp(App):
         gridLayout.add_widget(row_layoutLabel)
         edit_layout.add_widget(gridLayout)
         if editType == HelperUtilities.IncomeType:
-            self.resetDetailIncome()
             self.addDetailInputToGridLayout(edit_layout, self.listDetailIncomeDescription,self.listDetailIncomeMoney,editType)
         else:
-            self.resetDetailExpense()
             self.addDetailInputToGridLayout(edit_layout, self.listDetailExpenseDescription,self.listDetailExpenseMoney, editType)
     def addDetailInputToGridLayout(self, edit_layout, listDescription,listMoney, editType):
         for index in range(0,15):
@@ -226,7 +224,7 @@ class MoneyGoalApp(App):
             expense = "0.00"
             self.expenseMonthly.text ="0.00"
         incomeFloat = float(NumberUtilities.removeCommaToCaculate(income))
-        expenseMonthly = float(NumberUtilities.removeCommaToCaculate(expense)) #incomeFloat*float(RateExpense)/100
+        expenseMonthly = float(NumberUtilities.removeCommaToCaculate(expense))
         rateExpenseMonthly = np.round(expenseMonthly*100.0/incomeFloat)
         profitMontly = 0
         for index in range(0, len(self.income_list)-1):
@@ -270,17 +268,20 @@ class MoneyGoalApp(App):
         if instance.label == "tinhtoan":
             self.caculateMonthly(self.incomeMonthly.text, self.expenseMonthly.text)
             self.caculateSummary()
-            self.updateDataMainScreen('budget.json')
+            self.updateDataMainScreen(HelperUtilities.DataSource)
         elif instance.label =="back" or instance.label =="home":
             self.sm.switch_to(self.mainScreen, direction = 'left')
         elif instance.label =="next":
-
+            self.resetDetailExpense()
+            #self.loadDetailExpense()
             self.sm.switch_to(self.editExpenseScreen)
         else:
             self.currentMonth = instance.label[instance.label.index("_")+1:]
             print ("self.currentMonth:", self.currentMonth)
             self.labelIncomeMonthly.text = "Thu nhập tháng " + self.currentMonth
             self.labelExpenseMonthly.text = "Chi tiêu tháng "+ self.currentMonth
+            self.resetDetailIncome()
+            #self.loadDetailIncome()
             self.sm.switch_to(self.editIncomeScreen)
     def on_focusUpdateIncome(self, instance, value):
         self.changeOnFocus(instance, value)
