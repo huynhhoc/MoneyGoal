@@ -1,9 +1,10 @@
 <Button>:
     text: "TÍNH TOÁN"
     label: "tinhtoan"
+    source: 'Heading.png'
     size_hint: (1, 1)
     pos_hint: {'center_x': 0.5, 'center_y': .1}
-    background_color: 0.1, 0.5, 0.6, 0
+    background_color: 1, 1, 6, 2
     on_press: app.on_press_button(self)
 <BoxLayout>:
     canvas:
@@ -15,7 +16,5 @@
     text_size: self.size
     halign: 'center'
     valign: 'center'
-    background_color:1,0.1,2,1
-    color : "green"
-    border_width: 50
-    border_color: [1.0,2,1,1]
+    color : "blue"
+    source: 'Heading2.png'
