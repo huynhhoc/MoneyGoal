@@ -52,6 +52,26 @@ class ExpenseModel:
             self.data["TotalProfit"] = str(TotalProfit)
         except:
             print('something wrong: ')
+    def setTotal_Income(self, income):
+        try:
+            self.data["Total"]["Income"] = str(income)
+        except:
+            print('something wrong: ')
+    def setTotal_Expense(self, expense):
+        try:
+            self.data["Total"]["Expense"] = str(expense)
+        except:
+            print('something wrong: ')
+    def setTotal_RateExpense(self, RateExpense):
+        try:
+            self.data["Total"]["RateExpense"] = str(RateExpense)
+        except:
+            print('something wrong: ')
+    def setTotal_Profit(self, Profit):
+        try:
+            self.data["Total"]["Profit"] = str(Profit)
+        except:
+            print('something wrong: ')
     def setDetailProfit(self, income_list, expense_list, rateExpense_list, profit_list):
         for index, month in enumerate(self.months):
             self.setIncomeByMonth(month, income_list[index].text)
@@ -63,21 +83,21 @@ class ExpenseModel:
         self.setTotalRateExpense(rateExpense_list[index+1].text)
         self.setTotalProfitByYear(profit_list[index+1].text)
     def setIncomeByMonth(self, month, income):
-        self.data[month]["Income"] = str(NumberUtilities.removeCommaToCaculate(income))
+        self.data[month]["Income"] = NumberUtilities.removeCommaToCaculate(income)
     def setExpenseByMonth(self, month, expense):
-        self.data[month]["Expense"] = str(NumberUtilities.removeCommaToCaculate(expense))
+        self.data[month]["Expense"] = NumberUtilities.removeCommaToCaculate(expense)
     def setRateExpenseByMonth(self, month,RateExpense):
-        self.data[month]["RateExpense"] = str(NumberUtilities.removeCommaToCaculate(RateExpense))
+        self.data[month]["RateExpense"] = NumberUtilities.removeCommaToCaculate(RateExpense)
     def setProfitByMonth(self, month, Profit):
         self.data[month]["Profit"] = NumberUtilities.removeCommaToCaculate(Profit)
     def setTotalIncome(self,totalIncome):
-            self.data["Total"]["Income"] = str(NumberUtilities.removeCommaToCaculate(totalIncome))
+            self.data["Total"]["Income"] = NumberUtilities.removeCommaToCaculate(totalIncome)
     def setTotalExpense(self, totalExpense):
-        self.data["Total"]["Expense"] = str(NumberUtilities.removeCommaToCaculate(totalExpense))
+        self.data["Total"]["Expense"] = NumberUtilities.removeCommaToCaculate(totalExpense)
     def setTotalRateExpense(self, TotalRateExpense):
-        self.data["Total"]["RateExpense"] = str(NumberUtilities.removeCommaToCaculate(TotalRateExpense))
+        self.data["Total"]["RateExpense"] = NumberUtilities.removeCommaToCaculate(TotalRateExpense)
     def setTotalProfitByYear(self, TotalProfit):
-        self.data["Total"]["Profit"] = str(NumberUtilities.removeCommaToCaculate(TotalProfit))
+        self.data["Total"]["Profit"] = NumberUtilities.removeCommaToCaculate(TotalProfit)
     #Set Detail Income by Month
     def getDetailIncomeByMonth(self, month):
         return self.data["DetailIncome"][month]

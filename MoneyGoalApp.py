@@ -265,17 +265,26 @@ class MoneyGoalApp(App):
         totalIncome = 0
         totalExpense = 0
         totalProfit = 0
-        for indexIncome in range(0, len(self.income_list)-1):
-            totalIncome += float(NumberUtilities.removeCommaToCaculate(self.income_list[indexIncome].text))
-        for indexExpense in range (0,len(self.expense_list)-1):
-            totalExpense += float(NumberUtilities.removeCommaToCaculate(self.expense_list[indexExpense].text))
-        for indexProfit in range(0, len(self.profit_list)-1):
-            totalProfit += float(NumberUtilities.removeCommaToCaculate(self.profit_list[indexProfit].text))
-        self.income_list[indexIncome + 1].text = NumberUtilities.appendCommaBeforeDot(str(totalIncome))
-        self.expense_list[indexExpense + 1].text = NumberUtilities.appendCommaBeforeDot(str(totalExpense))
-        self.rateExpense_list[indexExpense + 1].text = str(np.round(totalExpense*100.0/totalIncome))+"%"
-        self.profit_list[indexProfit + 1].text = self.profit_list[indexProfit].text
-        self.totalProfit.text = self.profit_list[indexProfit].text
+        #for indexIncome in range(0, len(self.income_list)-1):
+        #    totalIncome += float(NumberUtilities.removeCommaToCaculate(self.income_list[indexIncome].text))
+        #for indexExpense in range (0,len(self.expense_list)-1):
+        #    totalExpense += float(NumberUtilities.removeCommaToCaculate(self.expense_list[indexExpense].text))
+        #for indexProfit in range(0, len(self.profit_list)-1):
+        #    totalProfit += float(NumberUtilities.removeCommaToCaculate(self.profit_list[indexProfit].text))
+        
+        for index in range(0, len(self.income_list)-1):
+            monthlyIncome  = float(NumberUtilities.removeCommaToCaculate(self.income_list[index].text))
+            monthlyExpense = float(NumberUtilities.removeCommaToCaculate(self.expense_list[index].text))
+            totalIncome  += monthlyIncome
+            totalExpense += monthlyExpense
+            totalProfit  = totalProfit + (monthlyIncome - monthlyExpense)
+            self.profit_list[index].text = NumberUtilities.appendCommaBeforeDot(str(totalProfit))
+            
+        self.income_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(str(totalIncome))
+        self.expense_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(str(totalExpense))
+        self.rateExpense_list[index + 1].text = str(np.round(totalExpense*100.0/totalIncome))+"%"
+        self.profit_list[index + 1].text = self.profit_list[index].text
+        self.totalProfit.text = self.profit_list[index].text
     def updateDataMainScreen(self, jsonFile):
         self.dataBudget.setIncomeMonthly(NumberUtilities.removeCommaToCaculate(self.incomeMonthly.text))
         self.dataBudget.setExpenseMonthly(NumberUtilities.removeCommaToCaculate(self.expenseMonthly.text))
@@ -300,7 +309,11 @@ class MoneyGoalApp(App):
         self.profit_list[ExpenseModel.months.index(month)].text = NumberUtilities.appendCommaBeforeDot(profit)
         self.rateExpense_list[ExpenseModel.months.index(month)].text = rateExpense + "%"
         self.caculateSummary()
-        self.dataBudget.setTotalProfit()
+        self.dataBudget.setTotal_Income(NumberUtilities.removeCommaToCaculate(self.income_list[-1].text))
+        self.dataBudget.setTotal_Expense(NumberUtilities.removeCommaToCaculate(self.expense_list[-1].text))
+        self.dataBudget.setTotal_RateExpense(NumberUtilities.removeCommaToCaculate(self.rateExpense_list[-1].text))
+        self.dataBudget.setTotal_Profit(NumberUtilities.removeCommaToCaculate(self.profit_list[-1].text))
+        
     def updateDetailIncomeByMonth(self, month):
         self.dataBudget.setDetailIncomeByMonth(month, self.listDetailIncomeDescription, self.listDetailIncomeMoney)
         self.onChangeDatebyMonth(month)
