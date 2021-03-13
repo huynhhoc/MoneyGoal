@@ -45,9 +45,9 @@ class NumberUtilities:
             return 'March'
         if num == '4':
             return 'April'
-        if num == 5:
+        if num == '5':
             return 'May'
-        if num == 6:
+        if num == '6':
             return 'June'
         if num == '7':
             return 'July'
@@ -59,5 +59,7 @@ class NumberUtilities:
             return 'October'
         if num == '11':
             return 'November'
-        else:
+        if num == '12':
             return 'December'
+        else:
+            pass

@@ -1,0 +1,30 @@
+{"IncomeMonthly": "1.00", "ExpenseMonthly": "0.00", "TotalProfit": "12.0", "January": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "1.0"}, "February": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "2.0"}, "March": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "3.0"}, "April": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "4.0"}, "May": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "5.0"}, "June": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "6.0"}, "July": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "7.0"}, "August": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "8.0"}, "September": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "9.0"}, "October": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "10.0"}, "November": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "11.0"}, "December": {"Income": "1.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "12.0"}, "Total": {"Income": "12.0", "Expense": "0.0", "RateExpense": "0.0%", "Profit": "12.0"},
+"DetailIncome":{
+	"January":[{"Description": "Thu nh\u1eadp th\u00e1ng 1", "Money":""}],
+	"February":[{"Description": "Thu nh\u1eadp th\u00e1ng 2", "Money":""}],
+	"March":[{"Description": "Thu nh\u1eadp th\u00e1ng 3", "Money":""}],
+	"April":[{"Description": "Thu nh\u1eadp th\u00e1ng 4", "Money":""}],
+	"May":[{"Description": "Thu nh\u1eadp th\u00e1ng 5", "Money":""}],
+	"June":[{"Description": "Thu nh\u1eadp th\u00e1ng 6", "Money":""}],
+	"July":[{"Description": "Thu nh\u1eadp th\u00e1ng 7", "Money":""}],
+	"August":[{"Description": "Thu nh\u1eadp th\u00e1ng 8", "Money":""}],
+	"September":[{"Description": "Thu nh\u1eadp th\u00e1ng 9", "Money":""}],
+	"October":[{"Description": "Thu nh\u1eadp th\u00e1ng 10", "Money":""}],
+	"November":[{"Description": "Thu nh\u1eadp th\u00e1ng 11", "Money":""}],
+	"December":[{"Description": "Thu nh\u1eadp th\u00e1ng 12", "Money":""}]
+	},
+"DetailExpense":{
+	"January":[{"Description": "Chi ti\u00eau th\u00e1ng 1", "Money":""}],
+	"February":[{"Description": "Chi ti\u00eau th\u00e1ng 2", "Money":""}],
+	"March":[{"Description": "Chi ti\u00eau th\u00e1ng 3", "Money":""}],
+	"April":[{"Description": "Chi ti\u00eau th\u00e1ng 4", "Money":""}],
+	"May":[{"Description": "Chi ti\u00eau th\u00e1ng 5", "Money":""}],
+	"June":[{"Description": "Chi ti\u00eau th\u00e1ng 6", "Money":""}],
+	"July":[{"Description": "Chi ti\u00eau th\u00e1ng 7", "Money":""}],
+	"August":[{"Description": "Chi ti\u00eau th\u00e1ng 8", "Money":""}],
+	"September":[{"Description": "Chi ti\u00eau th\u00e1ng 9", "Money":""}],
+	"October":[{"Description": "Chi ti\u00eau th\u00e1ng 10", "Money":""}],
+	"November":[{"Description": "Chi ti\u00eau th\u00e1ng 11", "Money":""}],
+	"December":[{"Description": "Chi ti\u00eau th\u00e1ng 12", "Money":""}]
+	}
+}

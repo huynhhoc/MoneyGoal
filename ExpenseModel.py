@@ -86,6 +86,7 @@ class ExpenseModel:
     def setDetailIncomeByMonth(self, month, listDetailIncomeDescription, listDetailIncomeMoney):
         for index, item in enumerate(listDetailIncomeDescription):
             try:
+                print ("Description: ", item.text)
                 self.data["DetailIncome"][month][index]["Description"] = item.text
                 self.data["DetailIncome"][month][index]["Money"] = listDetailIncomeMoney[index].text
             except:
@@ -94,6 +95,7 @@ class ExpenseModel:
     def setDetailExpenseByMonth(self, month, listDetailExpenseDescription, listDetailExpenseMoney):
         for index, item in enumerate(listDetailExpenseDescription):
             try:
+                print ("Description: ", item.text)
                 self.data["DetailExpense"][month][index]["Description"] = item.text
                 self.data["DetailExpense"][month][index]["Money"] = listDetailExpenseMoney[index].text
             except:
