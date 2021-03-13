@@ -6,6 +6,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
 from kivy.core.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.graphics import *
 import numpy as np
 import json
 from ExpenseModel import ExpenseModel
@@ -76,8 +77,6 @@ class MoneyGoalApp(App):
         
         #loadData
         self.loadDataToMainScreen(HelperUtilities.DataSource)
-        #self.loadDataToIncomeScreen(HelperUtilities.DataSource)
-        #self.loadDataToExpenseScreen(HelperUtilities.DataSource)
         #loadData
         #Create Screen Manager
         self.sm.add_widget(self.mainScreen)
@@ -162,7 +161,7 @@ class MoneyGoalApp(App):
             row_layout = BoxLayout()
             labNo = Label(text = str(index+1), pos_hint={'x': 0, 'center_y': .5},size_hint=(0.1, 0.5))
             if index ==0:
-                listDescription.append(TextInput(text = "Tổng", halign= "left", readonly= False, size_hint=(1, 1)))
+                listDescription.append(TextInput(halign= "left", readonly= True, size_hint=(1, 1)))
                 listMoney.append(TextInput(halign= "right", readonly= True, input_filter= "float", size_hint=(0.3, 1)))
             else:
                 listDescription.append(TextInput(halign= "left", readonly= False, size_hint=(1, 1)))
@@ -188,14 +187,14 @@ class MoneyGoalApp(App):
         h_layoutIncome.add_widget(self.expenseMonthly)
         self.expenseMonthly.bind(focus=self.on_focus)
         #tietkiem
-        h_layoutTietkiem = BoxLayout(spacing=30)
-        lblsave = Label(text ="Khoảng tiết kiệm cuối năm: ")
-        h_layoutTietkiem.add_widget(lblsave)
-        h_layoutTietkiem.add_widget(self.totalProfit)
+        h_layoutTietkiem = BoxLayout()
+        #lblsave = Label(text ="Khoảng tiết kiệm cuối năm:")
+        #h_layoutTietkiem.add_widget(lblsave)
+        #h_layoutTietkiem.add_widget(self.totalProfit)
         #main_layout.add_widget()
         buttonTT = Button()
         main_layout.add_widget(h_layoutIncome)
-        main_layout.add_widget(h_layoutTietkiem)
+        #main_layout.add_widget(h_layoutTietkiem)
         main_layout.add_widget(buttonTT)
     def createHeadingGridDetails(self, main_layout):
         labelTitle =["Tháng", "Thu nhập",  "Chi tiêu", "%Chi tiêu", "Tiết kiệm", "Cập nhật"]
@@ -265,13 +264,6 @@ class MoneyGoalApp(App):
         totalIncome = 0
         totalExpense = 0
         totalProfit = 0
-        #for indexIncome in range(0, len(self.income_list)-1):
-        #    totalIncome += float(NumberUtilities.removeCommaToCaculate(self.income_list[indexIncome].text))
-        #for indexExpense in range (0,len(self.expense_list)-1):
-        #    totalExpense += float(NumberUtilities.removeCommaToCaculate(self.expense_list[indexExpense].text))
-        #for indexProfit in range(0, len(self.profit_list)-1):
-        #    totalProfit += float(NumberUtilities.removeCommaToCaculate(self.profit_list[indexProfit].text))
-        
         for index in range(0, len(self.income_list)-1):
             monthlyIncome  = float(NumberUtilities.removeCommaToCaculate(self.income_list[index].text))
             monthlyExpense = float(NumberUtilities.removeCommaToCaculate(self.expense_list[index].text))
@@ -373,4 +365,6 @@ class MoneyGoalApp(App):
     #end methods
 if __name__ == "__main__":
     app = MoneyGoalApp()
+    app.on_title("", "QLCT")
+    #app.icon("")
     app.run()
