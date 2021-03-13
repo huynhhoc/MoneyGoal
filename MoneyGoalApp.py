@@ -13,31 +13,38 @@ from NumberUtilities import NumberUtilities
 from HelperUtilities import HelperUtilities
 class MoneyGoalApp(App):
     #begin fields
+    #Data on the main screen
     incomeMonthly =TextInput(multiline=False, halign= "right",input_type ="number", input_filter= "float",readonly=False,size_hint=(1, 1))
     expenseMonthly = TextInput(multiline=False, halign= "right", input_type = "number", input_filter= "float", readonly=False, size_hint=(1, 1))
     totalProfit = TextInput(multiline=False, halign= "right", readonly=True, size_hint=(1, 1))
+    income_list = []
+    expense_list = []
+    rateExpense_list = []
+    profit_list =[]
+    #end data on the main screen
+    # Data on the detail income screen based on currentlyMonth, these variables will be reset and load 
+    # when you need to move to other month
+    listDetailIncomeDescription = []
+    listDetailIncomeMoney = []
+    #Data on the detail expense screen based on currentlyMonth, these variables will be reset and load 
+    # when you need to move to other month
+    listDetailExpenseDescription = []
+    listDetailExpenseMoney = []
+    #
+    currentMonth = "1"
+    dataBudget = None #data load from budget.json
     data = None
     labelIncomeMonthly = Label(text="Thu nhập tháng ")
     labelExpenseMonthly = Label(text="Chi tiêu tháng ")
+    #end fields
     # Create the screen manager
     sm = ScreenManager()
     mainScreen = Screen(name='main')
     editIncomeScreen = Screen(name='editIncome')
     editExpenseScreen = Screen(name='editExpense')
-    currentMonth = "1"
-    income_list = []
-    expense_list = []
-    rateExpense_list = []
-    profit_list =[]
-    
-    #Detail Income 
-    listDetailIncomeDescription = []
-    listDetailIncomeMoney = []
-    #Detail Expense
-    listDetailExpenseDescription = []
-    listDetailExpenseMoney = []
-    #end fields
     #build GUI
+    #resetDetailIncome is used to reset listDetailIncome Descrition and Money when you switch to other month
+    # you need to call load DetailIncome from budget after reset these variables.
     def resetDetailIncome(self):
         for index in range(0, len(self.listDetailIncomeDescription)):
             self.listDetailIncomeDescription[index].text = ""
@@ -69,8 +76,8 @@ class MoneyGoalApp(App):
         
         #loadData
         self.loadDataToMainScreen(HelperUtilities.DataSource)
-        self.loadDataToIncomeScreen(HelperUtilities.DataSource)
-        self.loadDataToExpenseScreen(HelperUtilities.DataSource)
+        #self.loadDataToIncomeScreen(HelperUtilities.DataSource)
+        #self.loadDataToExpenseScreen(HelperUtilities.DataSource)
         #loadData
         #Create Screen Manager
         self.sm.add_widget(self.mainScreen)
@@ -81,9 +88,8 @@ class MoneyGoalApp(App):
     #end build GUI
     #begin methods
     def loadDataToMainScreen(self, jsonData):
-        dataBudget = ExpenseModel(jsonData)
-        self.data = dataBudget.data
-        print (self.data["IncomeMonthly"])
+        self.dataBudget = ExpenseModel(jsonData)
+        self.data = self.dataBudget.data
         if self.data["IncomeMonthly"] !="":
             self.incomeMonthly.text = NumberUtilities.convertNumberToDecimal(self.data["IncomeMonthly"])
         if self.data["ExpenseMonthly"] !="":
@@ -91,18 +97,32 @@ class MoneyGoalApp(App):
         if self.data["TotalProfit"] !="":
             self.totalProfit.text = NumberUtilities.convertNumberToDecimal(self.data["TotalProfit"])
         for index, month in enumerate(ExpenseModel.months):
-            self.income_list[index].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getIncomeByMonth(month))
-            self.expense_list[index].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getExpenseByMonth(month))
-            self.rateExpense_list[index].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getRateExpenseByMonth(month))
-            self.profit_list[index].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getProfitByTotal())
-        self.income_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getIncomeByTotal())
-        self.expense_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getExpenseByTotal())
-        self.rateExpense_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getRateExpenseByTotal())
-        self.profit_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(dataBudget.getProfitByTotal())
-    def loadDataToIncomeScreen(self, jsonData):
-        pass
-    def loadDataToExpenseScreen(self, jsonData):
-        pass
+            self.income_list[index].text = NumberUtilities.appendCommaBeforeDot(self.dataBudget.getIncomeByMonth(month))
+            self.expense_list[index].text = NumberUtilities.appendCommaBeforeDot(self.dataBudget.getExpenseByMonth(month))
+            self.rateExpense_list[index].text = self.dataBudget.getRateExpenseByMonth(month)
+            self.profit_list[index].text = NumberUtilities.appendCommaBeforeDot(self.dataBudget.getProfitByMonth(month))
+        self.income_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(self.dataBudget.getIncomeByTotal())
+        self.expense_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(self.dataBudget.getExpenseByTotal())
+        self.rateExpense_list[index + 1].text = self.dataBudget.getRateExpenseByTotal()
+        self.profit_list[index + 1].text = NumberUtilities.appendCommaBeforeDot(self.dataBudget.getProfitByTotal())
+    def loadDataToIncomeScreen(self, month, jsonData):
+        #dataBudget = ExpenseModel(jsonData)
+        detailIncomeByMonth = self.dataBudget.getDetailIncomeByMonth(NumberUtilities.convertToMonth(month))
+        try:
+            for index in range(0,len(self.listDetailIncomeDescription)):
+                self.listDetailIncomeDescription[index].text = detailIncomeByMonth[index]["Description"]
+                self.listDetailIncomeMoney[index].text = detailIncomeByMonth[index]["Money"]
+        except:
+            pass
+    def loadDataToExpenseScreen(self, month, jsonData):
+        #dataBudget = ExpenseModel(jsonData)
+        detailExpenseByMonth = self.dataBudget.getDetailExpenseByMonth(NumberUtilities.convertToMonth(month))
+        try:
+            for index in range(0,len(self.listDetailExpenseDescription)):
+                self.listDetailExpenseDescription[index].text = detailExpenseByMonth[index]["Description"]
+                self.listDetailExpenseMoney[index].text = detailExpenseByMonth[index]["Money"]
+        except:
+            pass
     def createScreenEdit(self, edit_layout, editType):
         self.createHeadingEdit(edit_layout, editType)
         self.createGridLayoutInput(edit_layout, editType)
@@ -120,7 +140,7 @@ class MoneyGoalApp(App):
         buttonLayout.add_widget(backButton)
         buttonLayout.add_widget(nextButton)
         edit_layout.add_widget(buttonLayout)
-        edit_layout.add_widget(Button())
+        edit_layout.add_widget(Button(label=editType))
     def createGridLayoutInput(self, edit_layout, editType):
         labelTitle =["STT", "Mô tả", "Số tiền"]
         gridLayout = BoxLayout()
@@ -144,7 +164,7 @@ class MoneyGoalApp(App):
             row_layout = BoxLayout()
             labNo = Label(text = str(index+1), pos_hint={'x': 0, 'center_y': .5},size_hint=(0.1, 0.5))
             if index ==0:
-                listDescription.append(TextInput(text = "Tổng", halign= "left", readonly= True, size_hint=(1, 1)))
+                listDescription.append(TextInput(text = "Tổng", halign= "left", readonly= False, size_hint=(1, 1)))
                 listMoney.append(TextInput(halign= "right", readonly= True, input_filter= "float", size_hint=(0.3, 1)))
             else:
                 listDescription.append(TextInput(halign= "left", readonly= False, size_hint=(1, 1)))
@@ -236,6 +256,10 @@ class MoneyGoalApp(App):
         for index in range(0, len(self.profit_list)-1):
             profitMontly = profitMontly + (incomeFloat - expenseMonthly)
             self.profit_list[index].text = NumberUtilities.appendCommaBeforeDot(str(profitMontly))
+    def saveDataSection1(self):
+        self.dataBudget.setIncomeMonthly(NumberUtilities.removeCommaToCaculate(self.incomeMonthly.text))
+        self.dataBudget.setExpenseMonthly(NumberUtilities.removeCommaToCaculate(self.expenseMonthly.text))
+        self.dataBudget.updateBudget()
     def caculateSummary(self):
         totalIncome = 0
         totalExpense = 0
@@ -251,18 +275,37 @@ class MoneyGoalApp(App):
         self.rateExpense_list[indexExpense + 1].text = str(np.round(totalExpense*100.0/totalIncome))+"%"
         self.profit_list[indexProfit + 1].text = self.profit_list[indexProfit].text
         self.totalProfit.text = self.profit_list[indexProfit].text
-        dataBudget = ExpenseModel('budget.json')
-        dataBudget.setIncomeMonthly(NumberUtilities.removeCommaToCaculate(self.incomeMonthly.text))
-        dataBudget.setExpenseMonthly(NumberUtilities.removeCommaToCaculate(self.expenseMonthly.text))
-        dataBudget.setTotalProfit(NumberUtilities.removeCommaToCaculate(self.totalProfit.text))
-        dataBudget.updateBudget()
     def updateDataMainScreen(self, jsonFile):
-        dataBudget = ExpenseModel(jsonFile)
-        dataBudget.setIncomeMonthly(NumberUtilities.removeCommaToCaculate(self.incomeMonthly.text))
-        dataBudget.setExpenseMonthly(NumberUtilities.removeCommaToCaculate(self.expenseMonthly.text))
-        dataBudget.setTotalProfit(NumberUtilities.removeCommaToCaculate(self.totalProfit.text))
-        dataBudget.setDetailProfit(self.income_list, self.expense_list, self.rateExpense_list, self.profit_list)
-        dataBudget.updateBudget()
+        self.dataBudget.setIncomeMonthly(NumberUtilities.removeCommaToCaculate(self.incomeMonthly.text))
+        self.dataBudget.setExpenseMonthly(NumberUtilities.removeCommaToCaculate(self.expenseMonthly.text))
+        self.dataBudget.setTotalProfit(NumberUtilities.removeCommaToCaculate(self.totalProfit.text))
+        self.dataBudget.setDetailProfit(self.income_list, self.expense_list, self.rateExpense_list, self.profit_list)
+        self.dataBudget.updateBudget()
+    def caculateProfitbyMonth(self, month, income, expense):
+        income = NumberUtilities.removeCommaToCaculate(income)
+        expense = NumberUtilities.removeCommaToCaculate(expense)
+        profit = float(income) - float(expense)
+        rate   = np.round(float(expense)*100.0/float(income))
+        print ("income: ", income, "expense: ", expense)
+        print ("month: ", month, " profit: ", profit, "rate: ", rate)
+        return str(rate), str(profit)
+    def onChangeDatebyMonth(self, month):
+        rateExpense, profit = self.caculateProfitbyMonth(month, self.listDetailIncomeMoney[0].text, self.listDetailExpenseMoney[0].text)
+        self.dataBudget.setProfitByMonth(month, profit)
+        self.dataBudget.setIncomeByMonth(month, self.listDetailIncomeMoney[0].text)
+        self.dataBudget.setExpenseByMonth(month, self.listDetailExpenseMoney[0].text)
+        self.dataBudget.setRateExpenseByMonth(month, rateExpense)
+        self.profit_list[ExpenseModel.months.index(month)].text = NumberUtilities.appendCommaBeforeDot(profit)
+        self.rateExpense_list[ExpenseModel.months.index(month)].text = rateExpense + "%"
+        self.caculateSummary()
+    def updateDetailIncomeByMonth(self, month):
+        self.dataBudget.setDetailIncomeByMonth(month, self.listDetailIncomeDescription, self.listDetailIncomeMoney)
+        self.onChangeDatebyMonth(month)
+        self.dataBudget.updateBudget()
+    def updateDetailExpenseByMonth(self, month):
+        self.dataBudget.setDetailExpenseByMonth(month, self.listDetailExpenseDescription, self.listDetailExpenseMoney)
+        self.onChangeDatebyMonth(month)
+        self.dataBudget.updateBudget()
     def on_press_button(self, instance):
         print('You pressed the button! ', instance.text, "id: ", instance.label)
         if instance.label == "tinhtoan":
@@ -273,15 +316,18 @@ class MoneyGoalApp(App):
             self.sm.switch_to(self.mainScreen, direction = 'left')
         elif instance.label =="next":
             self.resetDetailExpense()
-            #self.loadDetailExpense()
+            self.loadDataToExpenseScreen(self.currentMonth, HelperUtilities.DataSource)
             self.sm.switch_to(self.editExpenseScreen)
-        else:
+        elif instance.label == HelperUtilities.IncomeType:
+            self.updateDetailIncomeByMonth(NumberUtilities.convertToMonth(self.currentMonth))
+        elif instance.label == HelperUtilities.ExpenseType:
+            self.updateDetailExpenseByMonth(NumberUtilities.convertToMonth(self.currentMonth))
+        else: #Switch to Edit Income
             self.currentMonth = instance.label[instance.label.index("_")+1:]
-            print ("self.currentMonth:", self.currentMonth)
             self.labelIncomeMonthly.text = "Thu nhập tháng " + self.currentMonth
             self.labelExpenseMonthly.text = "Chi tiêu tháng "+ self.currentMonth
             self.resetDetailIncome()
-            #self.loadDetailIncome()
+            self.loadDataToIncomeScreen(self.currentMonth, HelperUtilities.DataSource)
             self.sm.switch_to(self.editIncomeScreen)
     def on_focusUpdateIncome(self, instance, value):
         self.changeOnFocus(instance, value)
@@ -290,14 +336,15 @@ class MoneyGoalApp(App):
             if index > 0:
                 totalIncome += float(NumberUtilities.removeCommaToCaculate(item.text))
         self.listDetailIncomeMoney[0].text = NumberUtilities.convertNumberToDecimal(str(totalIncome))
-        self.income_list[int(self.currentMonth)].text = self.listDetailIncomeMoney[0].text
+        self.income_list[int(self.currentMonth)-1].text = self.listDetailIncomeMoney[0].text
     def on_focusUpdateExpense(self, instance, value):
         self.changeOnFocus(instance, value)
-        totalIncome = 0
+        totalExpense = 0
         for index, item in enumerate(self.listDetailExpenseMoney):
             if index > 0:
-                totalIncome += float(NumberUtilities.removeCommaToCaculate(item.text))
-        self.listDetailExpenseMoney[0].text = NumberUtilities.convertNumberToDecimal(str(totalIncome))
+                totalExpense += float(NumberUtilities.removeCommaToCaculate(item.text))
+        self.listDetailExpenseMoney[0].text = NumberUtilities.convertNumberToDecimal(str(totalExpense))
+        self.expense_list[int(self.currentMonth)-1].text = self.listDetailExpenseMoney[0].text
     def changeOnFocus(self, instance, value):
         if value == False:
             instance.text = NumberUtilities.convertNumberToDecimal(instance.text)

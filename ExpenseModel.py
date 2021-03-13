@@ -52,9 +52,7 @@ class ExpenseModel:
             self.data["TotalProfit"] = str(TotalProfit)
         except:
             print('something wrong: ')
-
     def setDetailProfit(self, income_list, expense_list, rateExpense_list, profit_list):
-        #months = ['January', 'February', 'March','April', 'May', 'June', 'July', 'August','September','October','November','December']
         for index, month in enumerate(self.months):
             self.setIncomeByMonth(month, income_list[index].text)
             self.setExpenseByMonth(month, expense_list[index].text)
@@ -71,7 +69,7 @@ class ExpenseModel:
     def setRateExpenseByMonth(self, month,RateExpense):
         self.data[month]["RateExpense"] = str(NumberUtilities.removeCommaToCaculate(RateExpense))
     def setProfitByMonth(self, month, Profit):
-        self.data[month]["Profit"] = str(NumberUtilities.removeCommaToCaculate(Profit))
+        self.data[month]["Profit"] = NumberUtilities.removeCommaToCaculate(Profit)
     def setTotalIncome(self,totalIncome):
             self.data["Total"]["Income"] = str(NumberUtilities.removeCommaToCaculate(totalIncome))
     def setTotalExpense(self, totalExpense):
@@ -80,4 +78,24 @@ class ExpenseModel:
         self.data["Total"]["RateExpense"] = str(NumberUtilities.removeCommaToCaculate(TotalRateExpense))
     def setTotalProfitByYear(self, TotalProfit):
         self.data["Total"]["Profit"] = str(NumberUtilities.removeCommaToCaculate(TotalProfit))
-    #Set
+    #Set Detail Income by Month
+    def getDetailIncomeByMonth(self, month):
+        return self.data["DetailIncome"][month]
+    def getDetailExpenseByMonth(self, month):
+        return self.data["DetailExpense"][month]
+    def setDetailIncomeByMonth(self, month, listDetailIncomeDescription, listDetailIncomeMoney):
+        for index, item in enumerate(listDetailIncomeDescription):
+            try:
+                self.data["DetailIncome"][month][index]["Description"] = item.text
+                self.data["DetailIncome"][month][index]["Money"] = listDetailIncomeMoney[index].text
+            except:
+                temp = {"Description": item.text, "Money":listDetailIncomeMoney[index].text}
+                self.data["DetailIncome"][month].append(temp)
+    def setDetailExpenseByMonth(self, month, listDetailExpenseDescription, listDetailExpenseMoney):
+        for index, item in enumerate(listDetailExpenseDescription):
+            try:
+                self.data["DetailExpense"][month][index]["Description"] = item.text
+                self.data["DetailExpense"][month][index]["Money"] = listDetailExpenseMoney[index].text
+            except:
+                temp = {"Description": item.text, "Money":listDetailExpenseMoney[index].text}
+                self.data["DetailExpense"][month].append(temp)
