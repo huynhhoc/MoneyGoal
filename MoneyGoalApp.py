@@ -308,6 +308,8 @@ class MoneyGoalApp(App):
         self.dataBudget.setRateExpenseByMonth(month, rateExpense)
         self.profit_list[ExpenseModel.months.index(month)].text = NumberUtilities.appendCommaBeforeDot(profit)
         self.rateExpense_list[ExpenseModel.months.index(month)].text = rateExpense + "%"
+        self.income_list[ExpenseModel.months.index(month)].text = self.listDetailIncomeMoney[0].text
+        self.expense_list[ExpenseModel.months.index(month)].text = self.listDetailExpenseMoney[0].text
         self.caculateSummary()
         self.dataBudget.setTotal_Income(NumberUtilities.removeCommaToCaculate(self.income_list[-1].text))
         self.dataBudget.setTotal_Expense(NumberUtilities.removeCommaToCaculate(self.expense_list[-1].text))
